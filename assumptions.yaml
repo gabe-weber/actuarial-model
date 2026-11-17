@@ -2,9 +2,8 @@ valuation:
   valuation_year: 2026
   retirement_age: 62
   # CHG-005: retirement age changed from 65 to 62
-  # Salary growth: split by age bracket (CHG-002); rates raised +50bp per CHG-004
-  salary_growth_rate_pre40: 0.050
-  salary_growth_rate_post40: 0.030
+  # CHG-006: single salary_growth_rate 4.0% (bracket structure from CHG-002/CHG-004 reverted)
+  salary_growth_rate: 0.040
   discount_rate: 0.0475
   benefit_multiplier: 0.015
   benefit_service_basis: current_service

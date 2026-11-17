@@ -43,8 +43,7 @@ def load_assumptions(path: Path) -> dict[str, Any]:
     vals = raw["valuation"]
     required_keys = {
         "retirement_age",
-        "salary_growth_rate_pre40",
-        "salary_growth_rate_post40",
+        "salary_growth_rate",
         "discount_rate",
         "benefit_multiplier",
         "rounding_decimals",

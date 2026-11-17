@@ -119,18 +119,17 @@ class TestValidData:
 
 class TestLoadAssumptions:
     def test_missing_required_key_raises(self, tmp_path):
-        # Omit salary_growth_rate_pre40 — should fail with a clear message
+        # Omit salary_growth_rate — should fail with a clear message
         p = tmp_path / "bad.yaml"
         p.write_text(
             "valuation:\n"
-            "  retirement_age: 65\n"
-            "  salary_growth_rate_post40: 0.025\n"
-            "  discount_rate: 0.05\n"
+            "  retirement_age: 62\n"
+            "  discount_rate: 0.0475\n"
             "  benefit_multiplier: 0.015\n"
             "  rounding_decimals: 2\n",
             encoding="utf-8",
         )
-        with pytest.raises(ValueError, match="salary_growth_rate_pre40"):
+        with pytest.raises(ValueError, match="salary_growth_rate"):
             load_assumptions(p)
 
     def test_missing_valuation_key_raises(self, tmp_path):

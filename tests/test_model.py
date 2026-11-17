@@ -35,39 +35,25 @@ class TestYearsToRetirement:
 
 
 class TestProjectedSalary:
-    def test_entirely_pre40(self):
-        # Age 30, ytr=5: all 5 years are pre-40 — CHG-004 rate 5.0%
-        expected = 50000 * (1.050 ** 5)
-        result = projected_salary(50000, 0.050, 0.030, age=30, ytr=5)
-        assert abs(result - expected) < 1e-6
+    def test_known_value(self):
+        # salary=50000, growth=0.040, ytr=10 → 50000*(1.040**10) — CHG-006
+        expected = 50000 * (1.040 ** 10)
+        assert abs(projected_salary(50000, 0.040, 10) - expected) < 1e-6
 
-    def test_entirely_post40(self):
-        # Age 45, ytr=10: all 10 years are post-40 — CHG-004 rate 3.0%
-        expected = 80000 * (1.030 ** 10)
-        result = projected_salary(80000, 0.050, 0.030, age=45, ytr=10)
-        assert abs(result - expected) < 1e-6
+    def test_zero_years(self):
+        # Already retired: no growth applied
+        assert projected_salary(80000, 0.040, 0) == 80000.0
 
-    def test_straddles_age_40(self):
-        # Age 35, ytr=10: 5 years pre-40 at 5.0%, 5 years post-40 at 3.0%
-        expected = 60000 * (1.050 ** 5) * (1.030 ** 5)
-        result = projected_salary(60000, 0.050, 0.030, age=35, ytr=10)
-        assert abs(result - expected) < 1e-6
-
-    def test_already_past_40_zero_ytr(self):
-        # ytr=0: salary unchanged regardless of rates
-        assert projected_salary(80000, 0.050, 0.030, age=50, ytr=0) == 80000.0
-
-    def test_pre40_rate_higher_produces_higher_salary_for_young(self):
-        # Young employee (age 25, ytr=15): higher pre-40 rate → higher projection
-        low = projected_salary(50000, 0.02, 0.02, age=25, ytr=15)
-        high = projected_salary(50000, 0.05, 0.02, age=25, ytr=15)
+    def test_higher_growth_produces_higher_salary(self):
+        low = projected_salary(60000, 0.02, 20)
+        high = projected_salary(60000, 0.05, 20)
         assert high > low
 
-    def test_post40_rate_irrelevant_for_fully_pre40_period(self):
-        # Age 38, ytr=1: only 1 year pre-40; post-40 rate doesn't matter
-        r1 = projected_salary(50000, 0.04, 0.00, age=38, ytr=1)
-        r2 = projected_salary(50000, 0.04, 0.99, age=38, ytr=1)
-        assert abs(r1 - r2) < 1e-6
+    def test_changing_rate_changes_result(self):
+        # Confirm 4.0% and 3.5% produce different results
+        at_35 = projected_salary(60000, 0.035, 15)
+        at_40 = projected_salary(60000, 0.040, 15)
+        assert at_40 > at_35
 
 
 class TestProjectedService:
