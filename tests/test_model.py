@@ -12,7 +12,12 @@ from src.model import (
 
 
 class TestYearsToRetirement:
-    def test_age_40_ret_65(self):
+    def test_age_40_ret_62(self):
+        """CHG-005: primary retirement age is now 62."""
+        assert years_to_retirement(40, 62) == 22
+
+    def test_ret_age_65_still_works(self):
+        """Parametric check; function unchanged."""
         assert years_to_retirement(40, 65) == 25
 
     def test_ret_age_62(self):
@@ -20,13 +25,13 @@ class TestYearsToRetirement:
         assert years_to_retirement(40, 62) == 22
 
     def test_exactly_at_retirement(self):
-        assert years_to_retirement(65, 65) == 0
+        assert years_to_retirement(62, 62) == 0
 
     def test_past_retirement(self):
-        assert years_to_retirement(70, 65) == 0
+        assert years_to_retirement(70, 62) == 0
 
     def test_one_year_away(self):
-        assert years_to_retirement(64, 65) == 1
+        assert years_to_retirement(61, 62) == 1
 
 
 class TestProjectedSalary:
