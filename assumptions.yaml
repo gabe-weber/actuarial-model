@@ -5,7 +5,7 @@ valuation:
   # Salary growth: split by age bracket (CHG-002)
   salary_growth_rate_pre40: 0.045
   salary_growth_rate_post40: 0.025
-  discount_rate: 0.05
+  discount_rate: 0.0475
   benefit_multiplier: 0.015
   benefit_service_basis: current_service
   rounding_decimals: 2

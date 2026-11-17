@@ -87,17 +87,17 @@ class TestAnnualBenefit:
 class TestPresentValue:
     def test_discounts_not_compounds(self):
         # PV must be less than the future benefit for ytr > 0
-        pv = present_value(50000.0, 0.05, 10)
+        pv = present_value(50000.0, 0.0475, 10)
         assert pv < 50000.0
 
     def test_known_value(self):
-        # 50000 / (1.05 ** 10)
-        expected = 50000.0 / (1.05 ** 10)
-        assert abs(present_value(50000.0, 0.05, 10) - expected) < 1e-6
+        # 50000 / (1.0475 ** 10) — CHG-003: discount rate 4.75%
+        expected = 50000.0 / (1.0475 ** 10)
+        assert abs(present_value(50000.0, 0.0475, 10) - expected) < 1e-6
 
     def test_zero_years(self):
         # Already retired: no discounting
-        assert present_value(50000.0, 0.05, 0) == 50000.0
+        assert present_value(50000.0, 0.0475, 0) == 50000.0
 
     def test_higher_discount_reduces_pv(self):
         pv_low = present_value(50000.0, 0.03, 20)
@@ -106,7 +106,6 @@ class TestPresentValue:
 
     def test_higher_retirement_age_changes_pv(self):
         """Pushing retirement age out increases ytr and lowers PV (for young employees)."""
-        # age=40, benefit=50000, rate=0.05
-        pv_65 = present_value(50000.0, 0.05, years_to_retirement(40, 65))
-        pv_70 = present_value(50000.0, 0.05, years_to_retirement(40, 70))
+        pv_65 = present_value(50000.0, 0.0475, years_to_retirement(40, 65))
+        pv_70 = present_value(50000.0, 0.0475, years_to_retirement(40, 70))
         assert pv_70 < pv_65
