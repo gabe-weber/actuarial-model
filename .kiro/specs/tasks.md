@@ -121,3 +121,49 @@ projected_salary = salary
 - `load_assumptions()` now checks all six required keys and raises `ValueError` with key names before the model runs — prevents opaque `KeyError` during calculation.
 - Three new tests added in `TestLoadAssumptions`.
 - Removed unused `import yaml` from `test_end_to_end.py`.
+
+### CHG-003 — Discount rate 5.00% → 4.75%
+
+| Field | Value |
+|-------|-------|
+| ID | CHG-003 |
+| Date | 2026-11-17 |
+| Type | Assumption change (controlled) |
+| Author | Kiro (requested by user) |
+| Status | ✅ Merged to main (commit ba55d36) |
+| Scope | `assumptions.yaml`, `assumptions_alt62.yaml`, tests |
+| Total liability impact | 411,961.92 → 427,322.55 (+15,360.63 / +3.7%) |
+
+**Rationale:** Lower discount rate increases the present value of future benefits.
+
+---
+
+### CHG-004 — Salary growth +50bp each bracket (blended 3.5% → 4.0%)
+
+| Field | Value |
+|-------|-------|
+| ID | CHG-004 |
+| Date | 2026-11-17 |
+| Type | Assumption change (controlled) |
+| Author | Kiro (requested by user) |
+| Status | ✅ Merged to main (commit 0b394a2) |
+| Scope | `assumptions.yaml`, `assumptions_alt62.yaml`, tests |
+| Total liability impact | 427,322.55 → 461,345.38 (+34,022.83 / +8.0%) |
+
+**Rates:** pre-40 4.5% → 5.0%; post-40 2.5% → 3.0%. Both brackets raised uniformly by 50bp.
+
+---
+
+### CHG-005 — Retirement age 65 → 62 (primary assumption)
+
+| Field | Value |
+|-------|-------|
+| ID | CHG-005 |
+| Date | 2026-11-17 |
+| Type | Assumption change (controlled) |
+| Author | Kiro (requested by user) |
+| Status | ✅ Merged to main (commit b2c2d06) |
+| Scope | `assumptions.yaml`, tests |
+| Total liability impact | 461,345.38 → 449,411.21 (−11,934.17 / −2.6%) |
+
+**Note:** `assumptions_alt62.yaml` is now identical to `assumptions.yaml` and is retained for historical reference only.
