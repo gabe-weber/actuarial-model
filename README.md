@@ -16,7 +16,9 @@ This model projects defined-benefit pension liabilities for a synthetic employee
 | Step | Formula |
 |---|---|
 | Years to retirement | `max(retirement_age − age, 0)` |
-| Projected salary | `salary × (1 + salary_growth_rate) ^ years_to_retirement` |
+| Years in pre-40 bracket | `max(min(40 − age, ytr), 0)` |
+| Years in post-40 bracket | `ytr − years_pre40` |
+| Projected salary | `salary × (1 + rate_pre40)^years_pre40 × (1 + rate_post40)^years_post40` |
 | Projected service | `service + years_to_retirement` |
 | Annual benefit | `benefit_multiplier × projected_service × projected_salary` |
 | Present value | `annual_benefit ÷ (1 + discount_rate) ^ years_to_retirement` |
@@ -199,7 +201,8 @@ After rollback, re-run the model and confirm outputs match the earlier manifest.
 valuation:
   valuation_year: 2026
   retirement_age: 65
-  salary_growth_rate: 0.035
+  salary_growth_rate_pre40: 0.045
+  salary_growth_rate_post40: 0.025
   discount_rate: 0.05
   benefit_multiplier: 0.015
   benefit_service_basis: current_service
