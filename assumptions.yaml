@@ -1,0 +1,9 @@
+valuation:
+  valuation_year: 2026
+  retirement_age: 65
+  # Alternative retirement age: see assumptions_alt62.yaml and CHG-001 in .kiro/specs/tasks.md
+  salary_growth_rate: 0.035
+  discount_rate: 0.05
+  benefit_multiplier: 0.015
+  benefit_service_basis: current_service
+  rounding_decimals: 2
