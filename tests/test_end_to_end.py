@@ -76,7 +76,6 @@ class TestSuccessfulRun:
         # Re-compute present values independently to verify the summary total.
         # We use the unrounded formula so the comparison isn't contaminated by
         # per-row rounding (the spec requires tolerance of 0.01 on the final total).
-        import yaml
         from src.model import (
             years_to_retirement,
             projected_salary,

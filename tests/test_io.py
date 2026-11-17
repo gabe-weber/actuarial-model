@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from src.io import load_employees
+from src.io import load_assumptions, load_employees
 
 
 def _write_csv(tmp_path: Path, rows: list[dict], filename: str = "emp.csv") -> Path:
@@ -115,3 +115,30 @@ class TestValidData:
         assert result[0]["age"] == 40
         assert result[0]["salary"] == 80000.0
         assert result[0]["service"] == 15.0
+
+
+class TestLoadAssumptions:
+    def test_missing_required_key_raises(self, tmp_path):
+        # Omit salary_growth_rate_pre40 — should fail with a clear message
+        p = tmp_path / "bad.yaml"
+        p.write_text(
+            "valuation:\n"
+            "  retirement_age: 65\n"
+            "  salary_growth_rate_post40: 0.025\n"
+            "  discount_rate: 0.05\n"
+            "  benefit_multiplier: 0.015\n"
+            "  rounding_decimals: 2\n",
+            encoding="utf-8",
+        )
+        with pytest.raises(ValueError, match="salary_growth_rate_pre40"):
+            load_assumptions(p)
+
+    def test_missing_valuation_key_raises(self, tmp_path):
+        p = tmp_path / "bad.yaml"
+        p.write_text("other:\n  x: 1\n", encoding="utf-8")
+        with pytest.raises(ValueError, match="valuation"):
+            load_assumptions(p)
+
+    def test_file_not_found_raises(self, tmp_path):
+        with pytest.raises(FileNotFoundError):
+            load_assumptions(tmp_path / "nonexistent.yaml")

@@ -30,7 +30,7 @@ def load_assumptions(path: Path) -> dict[str, Any]:
 
     Raises:
         FileNotFoundError: if the file does not exist.
-        ValueError: if the expected structure is missing.
+        ValueError: if the expected structure is missing or required keys are absent.
     """
     if not path.exists():
         raise FileNotFoundError(f"Assumptions file not found: {path}")
@@ -40,7 +40,21 @@ def load_assumptions(path: Path) -> dict[str, Any]:
         raise ValueError(
             f"Assumptions file must contain a 'valuation' mapping: {path}"
         )
-    return raw["valuation"]
+    vals = raw["valuation"]
+    required_keys = {
+        "retirement_age",
+        "salary_growth_rate_pre40",
+        "salary_growth_rate_post40",
+        "discount_rate",
+        "benefit_multiplier",
+        "rounding_decimals",
+    }
+    missing = required_keys - set(vals.keys())
+    if missing:
+        raise ValueError(
+            f"Assumptions file is missing required key(s): {sorted(missing)}"
+        )
+    return vals
 
 
 def load_employees(path: Path) -> list[dict[str, Any]]:
