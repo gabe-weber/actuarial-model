@@ -42,19 +42,41 @@ def years_to_retirement(age: int, retirement_age: int) -> int:
 
 
 def projected_salary(
-    salary: float, salary_growth_rate: float, ytr: int
+    salary: float,
+    salary_growth_rate_pre40: float,
+    salary_growth_rate_post40: float,
+    age: int,
+    ytr: int,
 ) -> float:
-    """Project salary to retirement date using compound growth.
+    """Project salary to retirement date using age-bracketed compound growth.
+
+    Growth is applied at the pre-40 rate for years the employee is under 40,
+    and at the post-40 rate for years at age 40 or above.  If the employee is
+    already past both brackets, their salary is returned unchanged (ytr == 0).
 
     Args:
         salary: Current annual salary.
-        salary_growth_rate: Annual salary growth rate (e.g. 0.035).
+        salary_growth_rate_pre40: Annual growth rate applied while age < 40.
+        salary_growth_rate_post40: Annual growth rate applied while age >= 40.
+        age: Employee's current age.
         ytr: Years to retirement (from :func:`years_to_retirement`).
 
     Returns:
         Projected salary at retirement.
     """
-    return salary * (1 + salary_growth_rate) ** ytr
+    if ytr == 0:
+        return salary
+
+    # Years spent in the pre-40 bracket during the projection period
+    years_pre40 = max(min(40 - age, ytr), 0)
+    # Remaining years fall in the post-40 bracket
+    years_post40 = ytr - years_pre40
+
+    return (
+        salary
+        * (1 + salary_growth_rate_pre40) ** years_pre40
+        * (1 + salary_growth_rate_post40) ** years_post40
+    )
 
 
 def projected_service(service: float, ytr: int) -> float:
@@ -124,7 +146,8 @@ def calculate_employee(
         Dict containing input fields plus all computed output fields.
     """
     ret_age: int = assumptions["retirement_age"]
-    growth: float = assumptions["salary_growth_rate"]
+    growth_pre40: float = assumptions["salary_growth_rate_pre40"]
+    growth_post40: float = assumptions["salary_growth_rate_post40"]
     disc: float = assumptions["discount_rate"]
     mult: float = assumptions["benefit_multiplier"]
     decimals: int = assumptions["rounding_decimals"]
@@ -134,7 +157,7 @@ def calculate_employee(
     svc: float = employee["service"]
 
     ytr = years_to_retirement(age, ret_age)
-    proj_sal = projected_salary(sal, growth, ytr)
+    proj_sal = projected_salary(sal, growth_pre40, growth_post40, age, ytr)
     proj_svc = projected_service(svc, ytr)
     ann_ben = annual_benefit(mult, proj_svc, proj_sal)
     pv = present_value(ann_ben, disc, ytr)

@@ -20,7 +20,8 @@ ASSUMPTIONS_YAML = """\
 valuation:
   valuation_year: 2026
   retirement_age: 65
-  salary_growth_rate: 0.035
+  salary_growth_rate_pre40: 0.045
+  salary_growth_rate_post40: 0.025
   discount_rate: 0.05
   benefit_multiplier: 0.015
   benefit_service_basis: current_service
@@ -90,7 +91,13 @@ class TestSuccessfulRun:
         expected_total = 0.0
         for emp in employees:
             ytr = years_to_retirement(emp["age"], asmp["retirement_age"])
-            ps = projected_salary(emp["salary"], asmp["salary_growth_rate"], ytr)
+            ps = projected_salary(
+                emp["salary"],
+                asmp["salary_growth_rate_pre40"],
+                asmp["salary_growth_rate_post40"],
+                emp["age"],
+                ytr,
+            )
             psvc = projected_service(emp["service"], ytr)
             ab = annual_benefit(asmp["benefit_multiplier"], psvc, ps)
             pv = present_value(ab, asmp["discount_rate"], ytr)
