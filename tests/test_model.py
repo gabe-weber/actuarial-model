@@ -31,26 +31,26 @@ class TestYearsToRetirement:
 
 class TestProjectedSalary:
     def test_entirely_pre40(self):
-        # Age 30, ytr=5: all 5 years are pre-40
-        expected = 50000 * (1.045 ** 5)
-        result = projected_salary(50000, 0.045, 0.025, age=30, ytr=5)
+        # Age 30, ytr=5: all 5 years are pre-40 — CHG-004 rate 5.0%
+        expected = 50000 * (1.050 ** 5)
+        result = projected_salary(50000, 0.050, 0.030, age=30, ytr=5)
         assert abs(result - expected) < 1e-6
 
     def test_entirely_post40(self):
-        # Age 45, ytr=10: all 10 years are post-40
-        expected = 80000 * (1.025 ** 10)
-        result = projected_salary(80000, 0.045, 0.025, age=45, ytr=10)
+        # Age 45, ytr=10: all 10 years are post-40 — CHG-004 rate 3.0%
+        expected = 80000 * (1.030 ** 10)
+        result = projected_salary(80000, 0.050, 0.030, age=45, ytr=10)
         assert abs(result - expected) < 1e-6
 
     def test_straddles_age_40(self):
-        # Age 35, ytr=10: 5 years pre-40, 5 years post-40
-        expected = 60000 * (1.045 ** 5) * (1.025 ** 5)
-        result = projected_salary(60000, 0.045, 0.025, age=35, ytr=10)
+        # Age 35, ytr=10: 5 years pre-40 at 5.0%, 5 years post-40 at 3.0%
+        expected = 60000 * (1.050 ** 5) * (1.030 ** 5)
+        result = projected_salary(60000, 0.050, 0.030, age=35, ytr=10)
         assert abs(result - expected) < 1e-6
 
     def test_already_past_40_zero_ytr(self):
         # ytr=0: salary unchanged regardless of rates
-        assert projected_salary(80000, 0.045, 0.025, age=50, ytr=0) == 80000.0
+        assert projected_salary(80000, 0.050, 0.030, age=50, ytr=0) == 80000.0
 
     def test_pre40_rate_higher_produces_higher_salary_for_young(self):
         # Young employee (age 25, ytr=15): higher pre-40 rate → higher projection

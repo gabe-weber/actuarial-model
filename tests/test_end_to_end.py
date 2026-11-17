@@ -20,8 +20,8 @@ ASSUMPTIONS_YAML = """\
 valuation:
   valuation_year: 2026
   retirement_age: 65
-  salary_growth_rate_pre40: 0.045
-  salary_growth_rate_post40: 0.025
+  salary_growth_rate_pre40: 0.050
+  salary_growth_rate_post40: 0.030
   discount_rate: 0.0475
   benefit_multiplier: 0.015
   benefit_service_basis: current_service
